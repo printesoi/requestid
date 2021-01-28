@@ -18,9 +18,9 @@ type Config struct {
 	// }
 	Generator func() string
 
-	// RequestIdHeader defines a custom request ID header name instead of the
+	// RequestIDHeader defines a custom request ID header name instead of the
 	// default X-Request-ID. Optional.
-	RequestIdHeader string
+	RequestIDHeader string
 }
 
 // New initializes the RequestID middleware.
@@ -36,21 +36,21 @@ func New(config ...Config) gin.HandlerFunc {
 			return uuid.New().String()
 		}
 	}
-	if cfg.RequestIdHeader == "" {
-		cfg.RequestIdHeader = headerXRequestID
+	if cfg.RequestIDHeader == "" {
+		cfg.RequestIDHeader = headerXRequestID
 	}
 
 	return func(c *gin.Context) {
-		c.Set(requestIDHeaderKey, cfg.RequestIdHeader)
+		c.Set(requestIDHeaderKey, cfg.RequestIDHeader)
 
 		// Get id from request
-		rid := c.GetHeader(cfg.RequestIdHeader)
+		rid := c.GetHeader(cfg.RequestIDHeader)
 		if rid == "" {
 			rid = cfg.Generator()
 		}
 
 		// Set the id to ensure that the requestid is in the response
-		c.Header(cfg.RequestIdHeader, rid)
+		c.Header(cfg.RequestIDHeader, rid)
 		c.Next()
 	}
 }

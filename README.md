@@ -70,6 +70,6 @@ r.GET("/", func(c *gin.Context) {
 
 ```go
 r.Use(requestid.New(requestid.Config{
-	RequestIdHeader: "X-Custom-ID",
+	RequestIDHeader: "X-Custom-ID",
 }))
 ```

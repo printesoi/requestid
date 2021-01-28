@@ -47,7 +47,7 @@ func Test_RequestID_CustomHeader(t *testing.T) {
 
 	r := gin.New()
 	r.Use(New(Config{
-		RequestIdHeader: requestIDHeader,
+		RequestIDHeader: requestIDHeader,
 	}))
 	r.GET("/", emptySuccessResponse)
 
