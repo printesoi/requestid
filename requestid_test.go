@@ -41,3 +41,21 @@ func Test_RequestID_PassThru(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, testXRequestID, w.Header().Get(headerXRequestID))
 }
+
+func Test_RequestID_CustomHeader(t *testing.T) {
+	requestIDHeader := "X-My-ID"
+
+	r := gin.New()
+	r.Use(New(Config{
+		RequestIdHeader: requestIDHeader,
+	}))
+	r.GET("/", emptySuccessResponse)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	r.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Empty(t, w.Header().Get(headerXRequestID))
+	assert.NotEmpty(t, w.Header().Get(requestIDHeader))
+}

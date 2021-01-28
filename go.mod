@@ -1,4 +1,4 @@
-module github.com/gin-contrib/requestid
+module github.com/printesoi/requestid
 
 go 1.15
 

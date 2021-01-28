@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
+	"github.com/printesoi/requestid"
 )
 
 func main() {

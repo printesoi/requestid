@@ -5,7 +5,10 @@ import (
 	"github.com/google/uuid"
 )
 
-const headerXRequestID = "X-Request-ID"
+const (
+	headerXRequestID   = "X-Request-ID"
+	requestIDHeaderKey = "requestIDHeaderKey"
+)
 
 // Config defines the config for RequestID middleware
 type Config struct {
@@ -14,6 +17,10 @@ type Config struct {
 	//   return uuid.New().String()
 	// }
 	Generator func() string
+
+	// RequestIdHeader defines a custom request ID header name instead of the
+	// default X-Request-ID. Optional.
+	RequestIdHeader string
 }
 
 // New initializes the RequestID middleware.
@@ -29,21 +36,27 @@ func New(config ...Config) gin.HandlerFunc {
 			return uuid.New().String()
 		}
 	}
+	if cfg.RequestIdHeader == "" {
+		cfg.RequestIdHeader = headerXRequestID
+	}
 
 	return func(c *gin.Context) {
+		c.Set(requestIDHeaderKey, cfg.RequestIdHeader)
+
 		// Get id from request
-		rid := c.GetHeader(headerXRequestID)
+		rid := c.GetHeader(cfg.RequestIdHeader)
 		if rid == "" {
 			rid = cfg.Generator()
 		}
 
 		// Set the id to ensure that the requestid is in the response
-		c.Header(headerXRequestID, rid)
+		c.Header(cfg.RequestIdHeader, rid)
 		c.Next()
 	}
 }
 
 // Get returns the request identifier
 func Get(c *gin.Context) string {
-	return c.Writer.Header().Get(headerXRequestID)
+	requestIDHeader := c.GetString(requestIDHeaderKey)
+	return c.Writer.Header().Get(requestIDHeader)
 }
